@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <title>Underscore Bare</title>
+    <style type="text/css">
+      #templates { display: none; }
+      #scores .item {
+        background: #ddd;
+        padding: 1px 10px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <form id="add-task">
+      <input id="task-name" type="text" name="task-name" /><br />
+      <input id="submit" type="button" name="submit" value="Add Task" /><br />
+    </form>
+
+    <div id="tasks"></div>
+
+    <div id="templates">
+      <script class="task-template" type="text/template">
+        <div class="task" data-id="<%= id %>">
+          <p>Task: <%= task %></p>
+          <p>Complete? <%= status %></p>
+          <input id="complete-task" type="button" name="submit" value="Mark Complete" />
+        </div>
+      </script>
+    </div>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+    <script type="text/javascript">
+
+      var taskTemplateHtml = $('#templates .task-template').html();
+      var taskTemplate = _.template(taskTemplateHtml);
+
+      var tasks = [];
+
+      var renderTemplate = function(){
+        $('#tasks').empty();
+        _.each(tasks, function(obj){
+          var newTaskHtml = taskTemplate(obj);
+          $('#tasks').prepend(newTaskHtml);
+        });
+      }
+
+      $("#submit").on("click", function(){
+        var $task = $("#task-name").val();
+        tasks.push({ task: $task, status: false, id: tasks.length });
+        renderTemplate();
+      });
+
+      $(document).on('click', "#complete-task", function(e){
+        var $id = $(this).parent().data("id")
+        tasks[$id].status = true;
+        renderTemplate();
+      });
+
+    </script>
+
+  </body>
+</html>
